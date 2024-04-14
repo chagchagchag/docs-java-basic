@@ -1,0 +1,9 @@
+{
+    "java-8" : "Java 8",
+    "java-9" : "Java 9",
+    "java-10" : "Java 10",
+    "java-11" : "Java 11",
+    "java-16" : "Java 16",
+    "java-17" : "Java 17",
+    "java-21" : "Java 21"
+}

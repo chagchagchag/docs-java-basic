@@ -1,0 +1,172 @@
+## 객체 생성시 유효성 체크는 철저히
+
+- @Builder 에 비어있는 값이 있을 경우를 체크하자
+- 빌더 구문 내에서의 필수값 체크는 확실하게 하자
+
+
+
+<br/>
+
+
+
+## 목차
+{:toc}
+
+---
+
+<br/>
+
+
+
+
+### Builder 패턴의 허점
+빌더는 객체 생성을 편리하고 안전하게 할 수 있다는 점은 장점이다. 다만, 빌더 패턴을 통해 객체 생성시 누락될 수 있는 필드들에 대한 유효성 체크를 확실하게 해야 한다는 점도 간과하면 안된다.
+
+예를 들어 주식 Ticker 에 대한 클래스 Stock 이 있을 때 주식 종목에 대한 국가 코드는 없으면 안된다. 그리고 ticker 명, 종목 영문명, 종목명 은 비어있으면 안된다.
+
+주식 Ticker 에 대한 클래스인 `Stock` 클래스 예제를 통해서 나쁜 예와 좋은 예를 확인해보자.<br/>
+<br/>
+
+
+
+### 나쁜 예 : Stock1.java
+```java
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Stock1 {
+
+    private String ticker;
+    private String companyNameEn;
+    private String companyName;
+    private String sector;
+    private String countryCode;
+
+    @Builder(builderMethodName = "defaultBuilder")
+    public Stock1(String ticker, String companyNameEn, String companyName, String sector, String countryCode) {
+        this.ticker = ticker;
+        this.companyNameEn = companyNameEn;
+        this.companyName = companyName;
+        this.sector = sector;
+        this.countryCode = countryCode;
+    }
+
+}
+```
+<br/>
+
+
+
+@Builder 를 이용해서 객체를 생성하는 평이한 구문이다.<br/>
+
+Stock 클래스의 필수 필드는 ticker 명, 종목 영문명, 종목명, 국가코드다.<br/>
+
+그런데 위의 @Builder가 적용된 생성자 구문은 아래의 문제점이 있다.<br/>
+
+- ticker 명이 null 인지, 비어있는지를 체크하지 않는다.
+- companyNameEn 명이 null 인지, 비어있는지를 체크하지 않는다.
+- companyName 명이 null 인지, 비어있는지를 체크하지 않는다.
+- countryCode 명이 null 인지, 비어있는지를 체크하지 않는다.
+
+<br/>
+
+
+
+테스트코드
+```java
+@Test
+public void TEST_NULL_1(){
+    Stock1 amzn = Stock1.defaultBuilder()
+            .ticker("AMZN")
+            .sector("SALES")
+            .companyName("Amazon")
+            .companyNameEn("Amazon")
+            .countryCode(" ") // 국가 코드가 비어있는 상태로 객체를 생성해보자.
+            .build();
+
+    assertThat(amzn.getCountryCode()).isBlank();
+
+    Stock1 meta = Stock1.defaultBuilder()
+            .ticker("META")
+            .sector("IT SERVICE")
+            .companyName("Meta")
+            .companyNameEn("Meta")
+            .countryCode(null) // 국가 코드를 null 로 대입했다.
+            .build();
+
+    assertThat(meta.getCountryCode()).isNull();
+}
+```
+<br/>
+
+
+
+### 좋은 예 : Stock2.java
+위의 코드에서 객체 생성을 완전하게 하기위해 유효성체크를 하는 구문을 추가해보자.
+
+```java
+@Getter
+@NoArgsConstructor
+public class Stock2 {
+
+    private String ticker;
+    private String companyNameEn;
+    private String companyName;
+    private String sector;
+    private String countryCode;
+
+    @Builder(builderMethodName = "defaultBuilder")
+    public Stock2(String ticker, String companyNameEn, String companyName, String sector, String countryCode) {
+        Assert.hasText(ticker, "Ticker must not be empty.");
+        Assert.hasText(companyName, "Company name must not be empty.");
+        Assert.hasText(companyNameEn, "Company name in English must not be empty");
+        Assert.hasText(countryCode, "Country code must not be empty");
+
+        this.ticker = ticker;
+        this.companyNameEn = companyNameEn;
+        this.companyName = companyName;
+        this.sector = sector;
+        this.countryCode = countryCode;
+    }
+}
+```
+Stock 데이터에 대한 필수 조건은 아래와 같았다.
+- ticker 명이 null 인지, 비어있는지를 체크하지 않는다.
+- companyNameEn 명이 null 인지, 비어있는지를 체크하지 않는다.
+- companyName 명이 null 인지, 비어있는지를 체크하지 않는다.
+- countryCode 명이 null 인지, 비어있는지를 체크하지 않는다.
+
+위의 빌더 구문에서는 위의 조건에 대한 유효성 체크를 수행하고 있다.<br/>
+
+이렇게 유효성 체크 후 예외를 발생시키는 구문을 객체 생성 구문에 작성해두면, 객체 외부에서 null 체크를 쓸데없이 안해도 된다.<br/>
+
+<br/>
+
+
+
+테스트코드
+```java
+@Test
+public void TEST_NULL_2(){
+    Assertions.assertThatThrownBy(()->{
+        Stock2 amzn = Stock2.defaultBuilder()
+                .ticker("AMZN")
+                .sector("SALES")
+                .companyName("Amazon")
+                .companyNameEn("Amazon")
+                .countryCode(" ") // 국가 코드가 비어있는 상태로 객체를 생성해보자.
+                .build();
+    }).isInstanceOf(IllegalArgumentException.class);
+
+    Assertions.assertThatThrownBy(()->{
+        Stock2 meta = Stock2.defaultBuilder()
+                .ticker("META")
+                .sector("IT SERVICE")
+                .companyName("Meta")
+                .companyNameEn("Meta")
+                .countryCode(null) // 국가 코드를 null 로 대입했다.
+                .build();
+    }).isInstanceOf(IllegalArgumentException.class);
+}
+```
+ 
+

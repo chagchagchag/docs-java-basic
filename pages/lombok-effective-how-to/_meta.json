@@ -1,0 +1,8 @@
+{
+    "stop-using-data-annotation": "@Data 애노테이션은 가급적 사용을 피하자",
+    "builder-object-creation-validation-check": "객체 생성시 유효성 체크는 철저히",
+    "builder-object-creation-builder-variation":
+    "객체 생성 빌더를 용도별로 구별하자",
+    "builder-object-creation-static-factory-method":
+    "빌더를 통해 객체생성은 정적 팩토리 메서드로"
+}

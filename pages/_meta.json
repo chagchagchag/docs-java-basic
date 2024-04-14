@@ -1,6 +1,6 @@
 {
   "index": "Introduction",
-  "jvm": "jvm",
+  "jvm": "JVM",
   "java-features": "Java Features",
   "object": "Object",
   "lombok-effective-how-to": "롬복, 효율적으로 쓰자",

@@ -1,0 +1,51 @@
+## Java 9 변경 내용들
+
+## 참고자료
+
+- [일반적인 GC와 G1GC](https://thinkground.studio/%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-gc-%EB%82%B4%EC%9A%A9%EA%B3%BC-g1gc-garbage-first-garbage-collector-%EB%82%B4%EC%9A%A9/)
+- [G1GC의 라이프사이클, 장단점, heap 구조](https://steady-coding.tistory.com/590)
+
+
+
+<br/>
+
+
+
+## 요약
+
+- 디폴트 메서드에도 package private 지정 가능
+- try with resource 
+  - 과거 방식 : try 내부 불록에 인라인으로 선언되어야 하는 방식
+  - Java 9 이후의 방식 : try 외부에서 자원을 선언해도 가능
+- 익명객체 생성 시에 다이아몬드 연산자 지원
+- 불변 컬렉션 API
+  - e.g. `List.of("1", "2", "3")`
+  - e.g. `Set.of(1,2,3)`
+  - e.g. `Map.of("1":1, "2",2)` 
+- `Optional.stream()`
+  - Optional 객체 역시 Stream 으로 처리할 수 있게 되었다.
+- G1GC
+  - JDK 9 에서부터 G1 가비지 컬렉터가 디폴트 GC. 하지만 Java 9 까지는 Full GC는 싱글 스레드 기반 Mark Sweep Compact 알고리즘.
+  - Region 을 일정한 크기로 나누어 객체를 할당한다. G1GC는 Region 을 튜닝하고 이에 따라 stop the world 를 최소화한다.
+- JShll 커맨드 라인 툴 도입
+- 새로운 Http Client 도입 (`HttpRequest`)
+- 프로세스 API (`ProcessHandle`클래스)
+- JCMD 커맨드 라인툴
+- Publish, Subscriber 프레임워크
+- 통합 JVM 로깅
+  - JVM 로깅을 제공하는 공통 기능이 생겼는데, 각 모듈별로 독자적으로 공통기능을 사용해 독자적으로 로깅을 수행할 수 있는 로깅이 Java 9 부터 도입
+
+
+
+<br/>
+
+
+
+
+
+
+
+
+
+
+

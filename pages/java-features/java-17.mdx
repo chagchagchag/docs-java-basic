@@ -1,0 +1,100 @@
+## Java 17
+
+
+
+## 참고자료
+
+- [JDK 17 발표 및 새로운 변화 - blogs.oracle.com](https://blogs.oracle.com/javakr/post/jdk-17)
+- [자바17의 새로운 기능들, 3년 만에 LTS 버전 릴리즈](https://madplay.github.io/post/what-is-new-java-17)
+- [Java 17로 전환을 고려해야 하는 이유](https://velog.io/@riwonkim/Java-17%EB%A1%9C-%EC%A0%84%ED%99%98%EC%9D%84-%EA%B3%A0%EB%A0%A4%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0)
+- [우리팀이 JDK17을 도입한 이유](https://techblog.gccompany.co.kr/%EC%9A%B0%EB%A6%AC%ED%8C%80%EC%9D%B4-jdk-17%EC%9D%84-%EB%8F%84%EC%9E%85%ED%95%9C-%EC%9D%B4%EC%9C%A0-ced2b754cd7)
+- [JDK17 이제는 AdoptOpenJDK 대신 Eclipse Temurin 사용](https://revf.tistory.com/253)
+
+
+
+<br/>
+
+
+
+## 개인적인 생각
+
+이 글을 처음 썼을 때는 1년전인 2023년도 3월이었고, 지금은 새로운 버전으로 글을 쓰고 있습니다. 현 시점에서 Java 보다는 Kotlin 을 선호하는 편이지만 Java 는 무시할 수 없는 가장 편한 언어로 생각하고 있습니다. 만약 프로젝트를 새로한다면 Java 17 을 선택하게 될 것 같습니다.<br/>
+
+Java 17 은 LTS 버전이며 버그픽스도 많이 되어 있는 편이기에 어느 정도의 최신 Java 스펙을 갖추고 있으면서 오랫동안 지원이 되는 Java 버전을 원한다면 Java 17 을 선택하는 것도 나쁘지 않은 선택으로 보입니다. 또한 Java 11 \~ 16 사이에 추가된 문법적인 편의성을 두루 포함하고 있습니다.<br/>
+
+
+
+## 요약
+
+- LTS 주기 변경
+
+  - JDK 17 부터 LTS 버전에 대한 주기를 2년으로 변경 (JDK 17 이전에는 LTS 주기가 3년)
+  - 2021년 9월 발표된 JDK 17의 다음 LTS 버전은 2년 후인 2023년 9월에 발표될 예정 (이글을 쓰는 현재날짜는 2023년 3월 19일)
+  - 참고) LTS 주기 변경하기 전에는 2024년 9월 발표 예정이었다.
+
+- 새로운 라이선스 적용
+
+  - JDK 17부터는 NTFC (Oracle No-Fee Terms and Conditions) 라이선스를 적용해서 배포.
+  - JDK 17 이전에는 OTN (Oracle Technology Network) 라이선스.
+  - NTFC 라이선스에서는 개발자들이 많이 사용하는 SDKMAN 과 같은 배포,설치 툴을 이용해 Oracle JDK를 받을 수 있다. 다만, 배포의 경우 추가로 비용을 받지 않는 경우에만 허용된다. (참고. oracke jdk 배포를 의미함.)
+
+- 참고) JDK 17 기여도 
+
+  - [JDK Bug System](https://bugs.openjdk.java.net/secure/Dashboard.jspa) 에 등록된 2645 개의 버그 중 1774개 외의 871 개의 문제점들을 다른 기관들의 참여로 이루어졌다고 함 
+  - ![](https://blogs.oracle.com/content/published/api/v1.1/assets/CONT29FF518FBD194014A44A4B45D73D3178/Medium?cb=_cache_29b4&format=jpg&channelToken=9f64ca71eafc4506a34742bbaa3ee777)
+
+- [JEP 406, Preview](https://openjdk.org/jeps/406). Switch\~Case 문에 Pattern Matching 사용가능
+
+  - case 문을 람다 기반으로 작성 가능하다. 이때 null 데이터도 조금 더 간편하게 다룰 수 있게 되었다.
+
+  - 다만 아직 여전히 Preview 단계다.
+
+    - e.g.
+
+      - ```java
+        public void printHello(String s){
+        switch(s){
+        case null -> System.out.println("널 이에요"); 
+        case "hello", "world" -> System.out.println("안녕하세요");
+        default -> System.out.println("디폴트");
+        }
+        }
+        ```
+
+      ```
+      
+      ```
+
+  - case 문에 기본타입 외에도 모든 참조 타입을 사용할 수 있게 되었다.
+
+    - 이전에는 primitive 타입(기본타입), 일치하는 박스 타입(Character, Byte, Short, Integer 등), String, enum 타입만 허용됐었다.
+
+    - e.g.
+
+    - ```java
+      record Point(int i, int j) {}
+      enum Color { RED, GREEN, BLUE; }
+      
+      static void typeTester(Object o) {
+      	switch (o) {
+      		case null     -> System.out.println("null");
+      		case String s -> System.out.println("String");
+      		case Color c  -> System.out.println("Color with " + Color.values().length + " values");
+      		case Point p  -> System.out.println("Record class: " + p.toString());
+      		case int[] ia -> System.out.println("Array of ints of length" + ia.length);
+      		default       -> System.out.println("Something else");
+      	}
+      }
+      ```
+
+  - instanceof 사용 문법 간소화
+
+    - e.g. 
+      - 기존 : `if(o instanceof String){ ... }`
+      - 자바17 : `if(o instanceof String s) { ... }`
+        - 변수 s를 사용하는 코드를 if 문 안에서 사용 가능하다.
+
+- [JEP 409](https://openjdk.org/jeps/409) sealed class 
+
+  - 코틀린에서 사용하는 sealed class와 거의 유사한 기능이 지원된다.
+  - sealed class 는 JDK15 에서 Preview ([JEP 360](https://openjdk.org/jeps/360)) 로 제안되었고, JDK 16 에서 Second Preview ([JEP 397](https://openjdk.org/jeps/397))로 수정제안된 이력이 있다.

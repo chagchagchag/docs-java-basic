@@ -1,0 +1,7 @@
+{
+    "java-code-compile-execution-processes": "Java 파일이 컴파일되어 실행되기까지",
+    "compiler-interpreter-jit-compiler": "정적 컴파일러, 인터프리터, JIT 컴파일러",
+    "jvm-modules": "JVM 의 각 모듈들",
+    "what-is-garbage-collector": "가비지 컬렉터란?",
+    "minor-gc-major-gc-object-lifecycle": "Minor GC, Major GC, 객체의 생존 흐름"
+}
